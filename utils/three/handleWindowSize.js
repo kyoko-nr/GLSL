@@ -3,12 +3,12 @@
  * @param {THREE.Camera} camera
  * @param {THREE.WebGLRenderer} renderer
  */
-export const handleWindowSize = (camera, renderer) => {
+export const handleWindowSize = (camera, renderer, resolution) => {
 
   const onWindowResize = (e) => {
     const aspectRatio = window.innerWidth / window.innerHeight;
     let width, height;
-    if (aspectRatio>=1){
+    if (aspectRatio >= 1){
       width = 1;
       height = (window.innerHeight / window.innerWidth) * width;
     }else{
@@ -21,7 +21,11 @@ export const handleWindowSize = (camera, renderer) => {
     camera.bottom = -height;
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
+    resolution.value.x = window.innerWidth;
+    resolution.value.y = window.innerHeight;
   }
+
+  onWindowResize();
 
   window.addEventListener( 'resize', onWindowResize, false );
 }

@@ -4,9 +4,10 @@ import * as THREE from "three";
  * setup Three.js environment.
  * @param {*} vshader vertex shader
  * @param {*} fshader fragment shader
+ * @param {*} uniforms unform values
  * @returns camera, renderer
  */
-export const setupEnvironment = (vshader, fshader) => {
+export const setupEnvironment = (vshader, fshader, uniforms) => {
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
 
@@ -17,12 +18,6 @@ export const setupEnvironment = (vshader, fshader) => {
   canvas.appendChild(renderer.domElement);
 
   const geometry = new THREE.PlaneGeometry(2, 2);
-  const uniforms = {
-    u_color: { value: new THREE.Color(0xffff00) },
-    u_time: {value: 0.0 },
-    u_mouse: { value: { x: 0.0, y: 0.0 }},
-    u_resolution: { value: { x: 0, y: 0 }}
-  }
 
   const material = new THREE.ShaderMaterial( {
     uniforms: uniforms,
@@ -35,5 +30,5 @@ export const setupEnvironment = (vshader, fshader) => {
 
   camera.position.z = 1;
 
-  return {scene, camera, renderer};
+  return {scene, camera, renderer, uniforms};
 }
