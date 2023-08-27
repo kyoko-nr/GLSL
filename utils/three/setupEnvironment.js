@@ -35,5 +35,5 @@ export const setupEnvironment = (vshader, fshader) => {
 
   camera.position.z = 1;
 
-  return {camera, renderer};
+  return {scene, camera, renderer};
 }
