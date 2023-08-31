@@ -76,16 +76,42 @@ const fshader = `
     vec3 color = vec3(1.0);
 
     vec3 cViloet = vec3(0.82, 0, 0.97);
+    vec3 cIndigo = vec3(0.48, 0.12, 0.63);
+    vec3 cBlue = vec3(0.18, 0.31, 0.99);
+    vec3 cGreen = vec3(0.07, 0.86, 0.09);
+    vec3 cYellow = vec3(0.98, 1.0, 0.0);
+    vec3 cOrange = vec3(1.0, 0.47, 0.0);
+    vec3 cRed = vec3(0.99, 0.01, 0.0);
 
     float pViolet = sin(st.x * PI * 0.8 + 0.3) - 0.6;
-    float pIndigo = sin(st.x * PI * 0.8 + 0.3) - 0.5;
-    float pBlue = sin(st.x * PI * 0.8 + 0.3) - 0.4;
-    float pGreen = sin(st.x * PI * 0.8 + 0.3) - 0.3;
-    float pYellow = sin(st.x * PI * 0.8 + 0.3) - 0.2;
-    float pOrane = sin(st.x * PI * 0.8 + 0.3) - 0.1;
-    float pRed = sin(st.x * PI * 0.8 + 0.3);
-    
+    float pIndigo = sin(st.x * PI * 0.8 + 0.3) - 0.55;
+    float pBlue = sin(st.x * PI * 0.8 + 0.3) - 0.5;
+    float pGreen = sin(st.x * PI * 0.8 + 0.3) - 0.45;
+    float pYellow = sin(st.x * PI * 0.8 + 0.3) - 0.4;
+    float pOrane = sin(st.x * PI * 0.8 + 0.3) - 0.35;
+    float pRed = sin(st.x * PI * 0.8 + 0.3) - 0.3;
+
     color = mix(color, cViloet, plot(st, pViolet));
+    color = mix(color, cIndigo, plot(st, pIndigo));
+    color = mix(color, cBlue, plot(st, pBlue));
+    color = mix(color, cGreen, plot(st, pGreen));
+    color = mix(color, cYellow, plot(st, pYellow));
+    color = mix(color, cOrange, plot(st, pOrane));
+    color = mix(color, cRed, plot(st, pRed));
+
+    return vec4(color, 1.0);
+  }
+
+  vec4 drawFlag(vec2 st) {
+    vec3 color = vec3(1.0);
+
+    vec3 cBlue = vec3(0.18, 0.31, 0.99);
+    vec3 cWhite = vec3(1.0);
+    vec3 cRed = vec3(0.98, 0.0, 0.02);
+
+    color = mix(color, cBlue, step(0.0, st.x));
+    color = mix(color, cWhite, step(0.33, st.x));
+    color = mix(color, cRed, step(0.66, st.x));
 
     return vec4(color, 1.0);
   }
@@ -95,7 +121,8 @@ const fshader = `
     vec2 st = gl_FragCoord.xy/u_resolution.xy;
 
     // vec4 color = drawTurner(st, u_time);
-    vec4 color = drawRainbow(st);
+    // vec4 color = drawRainbow(st);
+    vec4 color = drawFlag(st);
 
     gl_FragColor = color;
   }
