@@ -36,14 +36,36 @@ const fshader = `
       // sqrtは計算負荷が高いのでベクトルの長さを計算するときはdotの方が軽量
   }
 
+  vec3 pattern(vec2 st) {
+    // Remap the space to -1. to 1.
+    st = st * 2.0 - 1.0;
+
+    // Make the distance field
+    float distance = length(abs(st) - 0.3);
+    // float distance = length( min(abs(st) - 0.3, 0.0) );
+    // float distance = length( max(st - 0.0, 0.0) );
+
+    // シマシマのパターン
+    // return vec3(fract( distance * 10.0));
+    // パキッとした形
+    // return vec3(step(0.3, distance));
+    // 外側の線
+    // return vec3(step(0.3, distance) * step(distance, 0.31));
+    // 外側の線（滑らか）
+    return vec3(smoothstep(0.3, 0.4, distance) * smoothstep(0.6, 0.5, distance));
+  }
+
   void main() {
 
     vec2 st = gl_FragCoord.xy/u_resolution.xy;
-    float pct = 0.0;
+    // float radius = abs(sin(u_time)) * 0.1;
 
-    pct = circle2(st, vec2(0.5), 0.3);
+    // float pct1 = circle2(st, vec2(0.2, 0.5), radius);
+    // float pct2 = circle2(st, vec2(0.8, 0.5), radius);
 
-    vec3 color = vec3(pct);
+    // vec3 color = vec3(pct1) + vec3(pct2);
+
+    vec3 color = pattern(st);
 
     gl_FragColor = vec4(color, 1.0);
   }
