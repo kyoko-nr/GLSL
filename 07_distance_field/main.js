@@ -23,13 +23,8 @@ const fshader = `
     return f;
   }
 
-  float drawGear(float angle) {
-    float wheelNum = 10.0;
-    float wheelHeight = 0.18;
-    float scale = 0.7;
-    // float f = smoothstep(-0.5, 1.0, cos(angle * wheelNum)) * wheelHeight + scale;
-    float f = smoothstep(-0.5, 1.0, cos(angle));
-    return f;
+  float withHole() {
+    return 0.0;
   }
 
   void main() {
@@ -42,8 +37,7 @@ const fshader = `
     float r = length(pos)*2.0;
     float a = atan(pos.y,pos.x);
 
-    // float f = shape1(a, u_time);
-    float f = drawGear(a);
+    float f = shape1(a, u_time);
 
     color = vec3( 1.-smoothstep(f,f+0.02,r) );
 
