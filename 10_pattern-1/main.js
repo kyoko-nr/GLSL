@@ -49,7 +49,7 @@ const fshader = `
     return box(st, vec2(size, size * 0.25)) + box(st, vec2(size * 0.25, size));
   }
 
-  float draw(in vec2 st) {
+  float drawTicTacToe(in vec2 st) {
     vec2 st2 = st * vec2(1.5, 3.0);
     vec2 tiledSt = fract(st2);
     vec2 floored = floor(st2);
@@ -65,11 +65,7 @@ const fshader = `
     vec2 st = gl_FragCoord.xy / min(u_resolution.x, u_resolution.y);
     vec3 color = vec3(0.0);
 
-    // vec2 tiled = tile(st, vec2(1.5, 3.0));
-
-    // // color = vec3(circle(tiled, 0.5));
-    // color = vec3(drawCross(tiled, 0.5));
-    color = vec3(draw(st));
+    color = vec3(drawTicTacToe(st));
 
     gl_FragColor = vec4(color, 1.0);
   }
