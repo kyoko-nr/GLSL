@@ -17,29 +17,48 @@ const fshader = `
   const float PI = 3.1415926;
   const float PI2 = PI * 2.0;
 
-  vec3 cSun = vec3(0.99, 0.32, 0.01);
+  mat2 scale(vec2 scale){
+    return mat2(scale.x, 0.0, 0.0, scale.y);
+  }
 
-  float drawSun(float len) {
-    float outline = 1.0 - step(len, 0.5);
-    vec3 sun = step(len, 0.5) * cSun;
-    float ring = abs(0.01 / (len - 0.5));
-    return ring;
+  mat2 rotate2d(float angle) {
+    return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+  }
+
+  float box(in vec2 st, in vec2 size) {
+    st += vec2(0.5);
+    size = vec2(0.5) - size * 0.5;
+
+    vec2 uv = smoothstep(size, size + vec2(0.001), st);
+    uv *= smoothstep(size, size + vec2(0.001), vec2(1.0) - st);
+
+    // vec2 uv = step(size, st);
+    // uv *= step(size, vec2(1.0) - st);
+    return uv.x * uv.y;
+  }
+
+  float drawCross(in vec2 st, float size) {
+    return box(st, vec2(size, size * 0.25)) + box(st, vec2(size * 0.25, size));
   }
 
   void main() {
+    vec2 st = (gl_FragCoord.xy * 2.0 - u_resolution) / min(u_resolution.x, u_resolution.y);
 
-    vec2  p = (gl_FragCoord.xy * 2.0 - u_resolution) / min(u_resolution.x, u_resolution.y);
-    float len = length(p);
+    // Transtlation
+    // vec2 translate = vec2(cos(u_time), sin(u_time));
 
-    float wave = sin((atan(p.y, p.x) + PI) / PI2 * PI * 100.0);
-    float circle = 1.5 / abs(sin(length(p * 50.0) - u_time * 9.0 + len + wave));
+    // Rotation
+    // st += translate * 0.35;
+    // st = rotate2d(sin(u_time) * PI2) * st;
 
-    float outline = 1.0 - step(len, 0.5);
-    vec3 sun = step(len, 0.5) * cSun;
+    // Scaling
+    st = rotate2d(sin(u_time) * PI) * scale(vec2(sin(u_time) + 1.0)) * st;
 
-    float ring = abs(0.01 / (len - 0.5));
+    vec3 color = vec3(0.0);
 
-    vec3 color = vec3(circle) * cSun * outline + sun + ring;
+    color += vec3(drawCross(st, 0.3));
+
+    gl_FragColor = vec4(color, 1.0);
   }
 `;
 
