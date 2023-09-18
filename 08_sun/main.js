@@ -14,20 +14,33 @@ const fshader = `
   uniform vec2 u_mouse;
   uniform vec2 u_resolution;
 
-  float PI = 3.1419;
-  float PI2 = 6.2838;
+  const float PI = 3.1415926;
+  const float PI2 = PI * 2.0;
+
+  vec3 cSun = vec3(0.99, 0.32, 0.01);
+
+  float drawSun(float len) {
+    float outline = 1.0 - step(len, 0.5);
+    vec3 sun = step(len, 0.5) * cSun;
+    float ring = abs(0.01 / (len - 0.5));
+    return ring;
+  }
 
   void main() {
 
     vec2  p = (gl_FragCoord.xy * 2.0 - u_resolution) / min(u_resolution.x, u_resolution.y);
     float len = length(p);
 
-    // float circle = sin(len * 50.0);
-    float arctan = (atan(p.y, p.x) + PI) / PI2;
-
     float wave = sin((atan(p.y, p.x) + PI) / PI2 * PI * 100.0);
+    float circle = 1.5 / abs(sin(length(p * 50.0) - u_time * 9.0 + len + wave));
 
-    gl_FragColor = vec4(wave, wave, wave, 1.0);
+    float outline = 1.0 - step(len, 0.5);
+    vec3 sun = step(len, 0.5) * cSun;
+
+    float ring = abs(0.01 / (len - 0.5));
+
+    vec3 color = vec3(circle) * cSun * outline + sun + ring;
+
   }
 `;
 
