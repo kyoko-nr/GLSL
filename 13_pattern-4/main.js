@@ -59,7 +59,7 @@ const fshader = `
     vec3 color = vec3(0.0);
     // vec2 st = gl_FragCoord.xy/u_resolution.xy;
 
-    // st = tile(st, 4.0);
+    st = tile(st, 4.0);
     // st = rotateTilePattern(st);
     // gl_FragColor = vec4(vec3(step(st.x,st.y)), 1.0);
 
