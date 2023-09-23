@@ -104,10 +104,8 @@ const fshader = `
     vec2 st = gl_FragCoord.xy/u_resolution.xy;
 
     st = tile(st, 4.0);
-    // st = rotateTilePattern(st);
-    // gl_FragColor = vec4(vec3(step(st.x,st.y)), 1.0);
-
     st = rotateTilePattern(st);
+    // gl_FragColor = vec4(vec3(step(st.x,st.y)), 1.0);
 
     // Animation
     st = rotate2d(st, -PI * u_time * 0.25);

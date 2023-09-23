@@ -40,6 +40,8 @@ const fshader = `
     float ring = abs(0.01 / (len - 0.5));
 
     vec3 color = vec3(circle) * cSun * outline + sun + ring;
+
+    gl_FragColor = vec4(color, 1.0);
   }
 `;
 
