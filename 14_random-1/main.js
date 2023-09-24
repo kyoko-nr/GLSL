@@ -44,6 +44,33 @@ const fshader = `
     return fract(sin(dot(st.xy, vec2(12.9898, 78.2333))) * 3758.5453123);
   }
 
+  vec3 mosaic (vec2 ipos) {
+    return vec3(random(ipos));
+  }
+
+  vec2 truchetPattern (in vec2 st, in float index) {
+    index = fract(index * 2.0);
+
+    if(index > 0.5) {
+      st = vec2(1.0 - st.x, st.y);
+    }
+    // if(index > 0.75) {
+    //   st = vec2(1.0) - st;
+    // } else if (index > 0.5) {
+    //   st = vec2(1.0 - st.x, st.y);
+    // } else if (index > 0.75) {
+    //   st = 1.0 - vec2(1.0 - st.x, st.y);
+    // }
+    return st;
+  }
+
+  vec3 maze (vec2 fpos, vec2 ipos) {
+    vec2 tile = truchetPattern(fpos, random(ipos));
+    float color = smoothstep(tile.x - 0.3, tile.x, tile.y) -
+      smoothstep(tile.x, tile.x + 0.3, tile.y);
+    return vec3(color);
+  }
+
   void main() {
     vec2 st = gl_FragCoord.xy / min(u_resolution.x, u_resolution.y);
     vec3 color = vec3(0.0);
@@ -53,7 +80,11 @@ const fshader = `
     vec2 ipos = floor(st);
     vec2 fpos = fract(st);
 
-    color = vec3(random(ipos));
+    // Mosaic
+    // color = mosaic(ipos);
+
+    // Maze
+    color = maze(fpos, ipos);
 
     gl_FragColor = vec4(color, 1.0);
   }
