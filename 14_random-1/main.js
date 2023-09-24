@@ -17,6 +17,9 @@ const fshader = `
   const float PI = 3.1415926;
   const float PI2 = PI * 2.0;
 
+  const vec3 cgray = vec3(0.5, 0.5, 0.5);
+  const vec3 cred = vec3(0.9, 0.1, 0.1);
+
   mat2 scale(vec2 scale){
     return mat2(scale.x, 0.0, 0.0, scale.y);
   }
@@ -37,26 +40,9 @@ const fshader = `
     return fract(_st);
   }
 
-  float drawVerLine(in vec2 st, in float width, in float posX) {
-    float halfWidth = width / 2.0;
-    float outline = 1.0 - step(posX - halfWidth, st.x);
-    float line = step(posX + halfWidth, st.x);
-    return 1.0 - (line + outline);
-  }
-
-  float drawHolLine(in vec2 st, in float width, in float posY) {
-    float halfWidth = width / 2.0;
-    float outline = 1.0 - step(posY - halfWidth, st.y);
-    float line = step(posY + halfWidth, st.y);
-    return 1.0 - (line + outline);
-  }
-
   float random (vec2 st) {
     return fract(sin(dot(st.xy, vec2(12.9898, 78.2333))) * 3758.5453123);
   }
-
-  const vec3 cgray = vec3(0.5, 0.5, 0.5);
-  const vec3 cred = vec3(0.9, 0.1, 0.1);
 
   void main() {
     vec2 st = gl_FragCoord.xy / min(u_resolution.x, u_resolution.y);
