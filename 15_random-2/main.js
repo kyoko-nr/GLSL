@@ -53,16 +53,18 @@ const fshader = `
   }
 
   vec3 randomBar (vec2 st) {
+    float rate1 = abs(sin(st.x));
+    float rate2 = abs(cos(st.x));
     if(st.y > 0.5) {
       // 上半分
-      st *= 100.0;
+      st *= 100.0 * rate1;
       float stX = (st.x - u_time * 30.0);
       float flooredX = floor(stX);
       float randomed = step(random(vec2(flooredX)), 0.9);
       return vec3(randomed);
     } else {
       // 下半分
-      st *= 100.0;
+      st *= 100.0 * rate2;
       float stX = (st.x + u_time * 30.0);
       float flooredX = floor(stX);
       float randomed = step(random(vec2(flooredX)), 0.9);
