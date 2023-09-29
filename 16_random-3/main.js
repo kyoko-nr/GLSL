@@ -45,38 +45,14 @@ const fshader = `
     return fract(sin(dot(st.xy, vec2(12.9898, 78.2333))) * 3758.5453123);
   }
 
-  vec3 randomCell (vec2 st) {
-    // if(st.y > 0.5) {
-
-      st *= 120.0;
-
-      float speed = step(random(floor(st - u_time)), 0.5);
-
-      vec2 animated = vec2((st.x - speed), st.y);
-      vec2 floored = floor(animated);
-      float randomed = step(random(floored), 0.5);
-      return vec3(randomed);
-    // }
-    // else {
-    //   // 下半分
-    //   st *= 100.0;
-    //   float stX = (st.x + u_time * 30.0);
-    //   float flooredX = floor(stX);
-    //   float randomed = step(random(vec2(flooredX)), 0.9);
-    //   return vec3(randomed);
-    // }
-  }
-
   vec3 randomSpeed(vec2 st) {
     vec2 mult = st * 100.0;
-    float speed = fract(mult.y) * u_time;
+    float speed = random(vec2(floor(mult.y)));
+    mult = vec2(mult.x - (u_time * 30.0 * speed) + (speed * mult.y));
 
     vec2 fl = floor(vec2(mult.x));
-    // fl = vec2(fl.x - speed, fl.y);
-    vec2 fr = fract(mult);
 
-    // float rand = step(random(fl), 0.5);
-    float rand = random(fl);
+    float rand = step(random(fl), 0.8);
     return vec3(rand + 0.5);
   }
 
