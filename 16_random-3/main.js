@@ -47,8 +47,9 @@ const fshader = `
 
   vec3 randomSpeed(vec2 st) {
     vec2 mult = st * 100.0;
-    float speed = random(vec2(floor(mult.y)));
-    mult = vec2(mult.x - (u_time * 30.0 * speed) + (speed * mult.y));
+    float flY = floor(mult.y);
+    float speed = random(vec2(flY));
+    mult = vec2(mult.x - (u_time * 30.0 * speed) + (speed * 10.0 * flY));
 
     vec2 fl = floor(vec2(mult.x));
 
