@@ -42,8 +42,8 @@ const fshader = `
   }
 
   float plot(vec2 st) {
-    // abs(st.y - st.x)が0.0以上0.01以下の場合に0.0〜1.0の値を返す
-    return smoothstep(0.01, 0.0,abs(st.y - st.x));
+    // abs(st.y - st.x)が0.0以上0.05以下の場合に0.0〜1.0の値を返す
+    return smoothstep(0.05, 0.0,abs(st.y - st.x));
   }
 
   float random (float x) {
@@ -58,7 +58,10 @@ const fshader = `
   float noise (float x) {
     float i = floor(x);
     float f = fract(x);
-    float y = mix(rand(i), rand(i + 1.0), f);
+
+    float y = rand(i);
+    // float y = mix(rand(i), rand(i + 1.0), f);
+    // float y = mix(rand(i), rand(i + 1.0), smoothstep(0.,1.,f));
 
     return y;
   }
@@ -68,7 +71,12 @@ const fshader = `
     st *= 10.0;
     vec3 color = vec3(0.0);
 
-    color = vec3(plot(vec2(st.x, noise(st.y))));
+    float x = st.x;
+    float y = noise(st.x);
+
+    color = vec3(0, y, y) + vec3(plot(vec2(x, y + st.y)));
+
+    // color = vec3(plot(vec2(x, y + st.y)));
 
     gl_FragColor = vec4(color, 1.0);
   }
