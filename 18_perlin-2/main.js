@@ -70,18 +70,38 @@ const fshader = `
     return 1.0 - step(distance(st, center), radius);
   }
 
-  float noiseShape(vec2 st, vec2 center, float radius) {
+  float noiseCircle(vec2 st, vec2 center, float radius) {
     vec2 st2 = vec2(st.x, st.y);
     return 1.0 - step(distance(st2, center), noise(radius));
   }
 
+  float noiseShape(vec2 st, vec2 center, float size) {
+    return 0.0;
+  }
+
+  float noiseLines(vec2 st) {
+    float noisex = noise(st.x) * 1.2;
+    float noisey = noise(st.y);
+    float sty = st.y + noisex;
+
+    float width = 0.05;
+    float y1 = 3.0;
+    float line1 = step(y1, sty) - step(y1 + width, sty);
+
+    float y2 = 6.0;
+    float line2 = step(y2, sty) - step(y2 + width, sty);
+    return line1 + line2;
+  }
+
   void main() {
     vec2 st = gl_FragCoord.xy / min(u_resolution.x, u_resolution.y);
-    // st *= 10.0;
+    st *= 10.0;
     vec3 color = vec3(0.0);
 
-    float circle = 1.0 - noiseShape(st, vec2(0.5), 0.2 + u_time);
-    color = vec3(circle);
+    // float circle = 1.0 - noiseCircle(st, vec2(0.5), 0.2 + u_time);
+    // color = vec3(circle);
+
+    color = vec3(noiseLines(st));
 
     gl_FragColor = vec4(color, 1.0);
   }
