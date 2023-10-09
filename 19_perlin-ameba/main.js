@@ -21,31 +21,6 @@ const fshader = `
   const vec3 cred = vec3(0.9, 0.1, 0.1);
   const vec3 cblue = vec3(0.3, 0.45, 0.85);
 
-  mat2 scale(vec2 scale){
-    return mat2(scale.x, 0.0, 0.0, scale.y);
-  }
-
-  vec2 rotate2d(vec2 st, float angle) {
-    st -= 0.5;
-    st = mat2(cos(angle), -sin(angle), sin(angle), cos(angle)) * st;
-    st += 0.5;
-    return st;
-  }
-
-  float easeInOutCubic(float x) {
-    return x < 0.5 ? 4.0 * x * x * x : 1.0 - pow(-2.0 * x + 2.0, 3.0) / 2.0;
-  }
-
-  vec2 tile (vec2 _st, float _zoom) {
-    _st *= _zoom;
-    return fract(_st);
-  }
-
-  float plot(vec2 st) {
-    // abs(st.y - st.x)が0.0以上0.05以下の場合に0.0〜1.0の値を返す
-    return smoothstep(0.05, 0.0,abs(st.y - st.x));
-  }
-
   float random (float x) {
     return fract(sin(dot(vec2(x), vec2(12.9898, 78.2333))) * 3758.5453123);
   }
@@ -66,38 +41,25 @@ const fshader = `
     return y;
   }
 
-  float circle1(vec2 st, vec2 center, float radius) {
-    return 1.0 - step(distance(st, center), radius);
-  }
-
-  float noiseCircle(vec2 st, vec2 center, float radius) {
-    vec2 st2 = vec2(st.x, st.y);
-    return 1.0 - step(distance(st2, center), noise(radius));
-  }
-
-  float noiseLines(vec2 st) {
-    float noisex = noise(st.x) * 1.2;
-    float noisey = noise(st.y);
-    float sty = st.y + noisex;
-
-    float width = 0.05;
-    float y1 = 3.0;
-    float line1 = step(y1, sty) - step(y1 + width, sty);
-
-    float y2 = 6.0;
-    float line2 = step(y2, sty) - step(y2 + width, sty);
-    return line1 + line2;
+  float noiseShape(vec2 st, vec2 center, float size, float complication, vec2 speed) {
+    float noise = (
+        noise(st.x * complication + sin(u_time * speed.x))
+        + noise(st.y * complication + cos(u_time * speed.y))
+      ) * 0.1;
+    float shape = step(distance(st, center), size + noise);
+    return shape;
   }
 
   void main() {
     vec2 st = gl_FragCoord.xy / min(u_resolution.x, u_resolution.y);
     vec3 color = vec3(0.0);
 
-    // float circle = 1.0 - noiseCircle(st, vec2(0.5), 0.2 + u_time);
-    // color = vec3(circle);
+    float shape1 = noiseShape(st, vec2(0.3), 0.1, 8.0, vec2(0.8, 1.2));
+    float shape2 = noiseShape(st, vec2(0.7), 0.12, 6.0, vec2(0.5, 0.8));
+    vec3 outline = vec3(1.0 - shape1 - shape2);
+    vec3 colored = shape1 * cred + shape2 * cblue;
 
-    st *= 10.0;
-    color = vec3(noiseLines(st));
+    color = outline + colored;
 
     gl_FragColor = vec4(color, 1.0);
   }
